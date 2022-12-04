@@ -1,0 +1,41 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: debezium/postgres:latest
+    # image: postgres
+    container_name: postgres
+    hostname: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER:  admin
+    ports:
+      - 5432:5432
+    volumes:
+      - vol-postgresdbz:/var/lib/postgresql/data
+      - ./postgres.conf:/usr/share/postgresql/postgresql.conf
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:  
+      - 8080:8080
+
+  # drone-crud:
+  #   build:
+  #     context: ../drone-crud/
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 8000:8000
+  #   depends_on:
+  #     - db
+
+volumes:
+  vol-postgresdbz:
+
+networks:
+  default:
+    driver: bridge
